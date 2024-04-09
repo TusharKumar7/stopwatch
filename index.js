@@ -5,7 +5,7 @@ const resetBtn = document.getElementById("reset-btn");
 const lapBtn = document.getElementById("lap-btn");
 const lapHeadContainer = document.querySelector(".lap-head-container");
 const lapContainer = document.querySelector("#lap-container");
-const lapTable=document.getElementById("lap-table");
+const lapTable = document.getElementById("lap-table");
 
 let startTime;
 let elapsedTime = 0;
@@ -30,6 +30,8 @@ function printTime() {
 }
 
 function timeTostring(time) {
+  let timeInDays = time / 86400000;
+  let dd = Math.floor(timeInDays);
   let timeInHours = time / 3600000;
   let hh = Math.floor(timeInHours);
   let timeInMins = (timeInHours - hh) * 60;
@@ -39,12 +41,13 @@ function timeTostring(time) {
   let timeInMiliSec = (timeInSec - ss) * 100;
   let ms = Math.floor(timeInMiliSec);
 
+  let preciseDay = dd < 10 ? "0" + dd : dd;
   let preciseHour = hh < 10 ? "0" + hh : hh;
   let preciseMin = mm < 10 ? "0" + mm : mm;
   let preciseSec = ss < 10 ? "0" + ss : ss;
   let preciseMilliSec = ms < 10 ? "0" + ms : ms;
 
-  return `${preciseHour}:${preciseMin}:${preciseSec}:${preciseMilliSec}`;
+  return `${preciseDay}:${preciseHour}:${preciseMin}:${preciseSec}:${preciseMilliSec}`;
 }
 
 stopBtn.addEventListener("click", function () {
@@ -57,18 +60,18 @@ stopBtn.addEventListener("click", function () {
 resetBtn.addEventListener("click", function () {
   clearInterval(timeInterval);
   elapsedTime = 0;
-  lapCount=0;
-  totalLapElapsedTime=0;
-  startTime=0
-  lapStartTime=0;
-  totalLapTime=0;
-  time.innerText = "00:00:00:00";
+  lapCount = 0;
+  totalLapElapsedTime = 0;
+  startTime = 0;
+  lapStartTime = 0;
+  totalLapTime = 0;
+  time.innerText = "00;00:00:00:00";
   startBtn.style.display = "inline-block";
   stopBtn.style.display = "none";
   resetBtn.style.display = "none";
   lapBtn.style.display = "none";
-  lapTable.style.display="none";
-  lapContainer.innerHTML=""
+  lapTable.style.display = "none";
+  lapContainer.innerHTML = "";
 });
 
 lapBtn.addEventListener("click", function () {
@@ -91,7 +94,7 @@ lapBtn.addEventListener("click", function () {
 
   const totalLapTimeDiv = document.createElement("div");
   totalLapTimeDiv.classList.add("total-lap-time");
-  lapTable.style.display="block";
+  lapTable.style.display = "block";
 
   dislayLapTime(lapTimeDiv, lapTime);
   dislayLapTime(totalLapTimeDiv, totalLapTime);
@@ -113,12 +116,13 @@ function getLap() {
 }
 
 function dislayLapTime(div, time) {
-  const [hour, min, sec, millisec] = time.split(":").map(Number);
+  const [day, hour, min, sec, millisec] = time.split(":").map(Number);
 
+  const formattedDay = day < 10 ? "0" + day : day;
   const formattedHour = hour < 10 ? "0" + hour : hour;
   const formattedMin = min < 10 ? "0" + min : min;
   const formattedSec = sec < 10 ? "0" + sec : sec;
   const formattedMilliSec = millisec < 10 ? "0" + millisec : millisec;
 
-  div.innerHTML = `${formattedHour}:${formattedMin}:${formattedSec}:${formattedMilliSec}`;
+  div.innerHTML = `${formattedDay}:${formattedHour}:${formattedMin}:${formattedSec}:${formattedMilliSec}`;
 }
