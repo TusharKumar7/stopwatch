@@ -3,15 +3,16 @@ const startBtn = document.getElementById("start-btn");
 const stopBtn = document.getElementById("stop-btn");
 const resetBtn = document.getElementById("reset-btn");
 const lapBtn = document.getElementById("lap-btn");
-const lapHeadContainer = document.getElementById("lap-head-container");
-const lapNoContainer = document.getElementById("lap-no-container");
-const lapTimeContainer = document.getElementById("lap-time-container");
-const totalLapContainer = document.getElementById("total-lap-container");
-const lapContainer = document.getElementById("lap-container");
+const lapHeadContainer = document.querySelector(".lap-head-container");
+const lapContainer = document.querySelector("#lap-container");
+const lapTable=document.getElementById("lap-table");
 
 let startTime;
 let elapsedTime = 0;
 let timeInterval;
+let lapStartTime = 0;
+let totalLapElapsedTime = 0;
+let lapCount = 0;
 
 startBtn.addEventListener("click", function () {
   startTime = Date.now() - elapsedTime;
@@ -20,6 +21,7 @@ startBtn.addEventListener("click", function () {
   stopBtn.style.display = "inline-block";
   resetBtn.style.display = "inline-block";
   lapBtn.style.display = "inline-block";
+  lapStartTime = startTime;
 });
 
 function printTime() {
@@ -37,15 +39,15 @@ function timeTostring(time) {
   let timeInMiliSec = (timeInSec - ss) * 100;
   let ms = Math.floor(timeInMiliSec);
 
-  let preciseHour = hh < 9 ? "0" + hh : hh;
-  let preciseMin = mm < 9 ? "0" + mm : mm;
-  let preciseSec = ss < 9 ? "0" + ss : ss;
+  let preciseHour = hh < 10 ? "0" + hh : hh;
+  let preciseMin = mm < 10 ? "0" + mm : mm;
+  let preciseSec = ss < 10 ? "0" + ss : ss;
+  let preciseMilliSec = ms < 10 ? "0" + ms : ms;
 
-  return `${preciseHour}:${preciseMin}:${preciseSec}:${ms}`;
+  return `${preciseHour}:${preciseMin}:${preciseSec}:${preciseMilliSec}`;
 }
 
 stopBtn.addEventListener("click", function () {
-  console.log("stop button clicked");
   clearInterval(timeInterval);
   startBtn.style.display = "inline-block";
   stopBtn.style.display = "none";
@@ -53,46 +55,53 @@ stopBtn.addEventListener("click", function () {
 });
 
 resetBtn.addEventListener("click", function () {
-  console.log("reset button clicked");
   clearInterval(timeInterval);
   elapsedTime = 0;
+  lapCount=0;
+  totalLapElapsedTime=0;
+  startTime=0
+  lapStartTime=0;
+  totalLapTime=0;
   time.innerText = "00:00:00:00";
   startBtn.style.display = "inline-block";
   stopBtn.style.display = "none";
+  resetBtn.style.display = "none";
   lapBtn.style.display = "none";
+  lapTable.style.display="none";
+  lapContainer.innerHTML=""
 });
-
-let totalLapElapsedTime = 0;
-let lapCount = 0;
 
 lapBtn.addEventListener("click", function () {
   lapCount++;
+  let { lapTime, totalLapTime } = getLap();
   if (lapCount > 0) {
-    lapNoContainer[0].style.display = "inline-block";
-    lapNoContainer[0].style.display = "inline-block";
-    lapNoContainer[0].style.display = "inline-block";
+    lapHeadContainer.style.display = "flex";
   }
   const lapRow = document.createElement("div");
-  lapContainer.appendChild(lapRow);
   lapRow.classList.add("lap");
 
   const lapNoDiv = document.createElement("div");
   lapNoDiv.classList.add("lap-no");
 
+  const lapCountNo = lapCount < 10 ? "0" + lapCount : lapCount;
+  lapNoDiv.innerHTML = "Lap " + lapCountNo;
+
   const lapTimeDiv = document.createElement("div");
   lapTimeDiv.classList.add("lap-time");
 
-  const totalLapTime = document.createElement("div");
-  totalLapTime.classList.add("total-lap-time");
+  const totalLapTimeDiv = document.createElement("div");
+  totalLapTimeDiv.classList.add("total-lap-time");
+  lapTable.style.display="block";
 
-  const lapCountNo = lapCount < 9 ? "0" + lapCount : lapCount;
-  lapNoDiv.innerHTML = "Lap " + lapCountNo;
+  dislayLapTime(lapTimeDiv, lapTime);
+  dislayLapTime(totalLapTimeDiv, totalLapTime);
 
-  const { hours, minutes, seconds, millisec } = time;
-  
+  lapContainer.appendChild(lapRow);
+  // lapContainer.classList.remove("hidden")
+  lapRow.appendChild(lapNoDiv);
+  lapRow.appendChild(lapTimeDiv);
+  lapRow.appendChild(totalLapTimeDiv);
 });
-
-let lapStartTime = 0;
 
 function getLap() {
   const elapsedLapTime = Date.now() - lapStartTime;
@@ -101,4 +110,15 @@ function getLap() {
   totalLapElapsedTime = totalLapElapsedTime + elapsedLapTime;
   const totalLapTime = timeTostring(totalLapElapsedTime);
   return { lapTime, totalLapTime };
+}
+
+function dislayLapTime(div, time) {
+  const [hour, min, sec, millisec] = time.split(":").map(Number);
+
+  const formattedHour = hour < 10 ? "0" + hour : hour;
+  const formattedMin = min < 10 ? "0" + min : min;
+  const formattedSec = sec < 10 ? "0" + sec : sec;
+  const formattedMilliSec = millisec < 10 ? "0" + millisec : millisec;
+
+  div.innerHTML = `${formattedHour}:${formattedMin}:${formattedSec}:${formattedMilliSec}`;
 }
