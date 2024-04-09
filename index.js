@@ -8,7 +8,7 @@ const lapContainer = document.querySelector("#lap-container");
 const lapTable = document.getElementById("lap-table");
 
 let startTime = 0;
-let elapsedTime = 664256486;
+let elapsedTime = 0;
 let timeInterval;
 let lapStartTime = 0;
 let totalLapElapsedTime = 0;
