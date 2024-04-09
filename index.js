@@ -7,8 +7,8 @@ const lapHeadContainer = document.querySelector(".lap-head-container");
 const lapContainer = document.querySelector("#lap-container");
 const lapTable = document.getElementById("lap-table");
 
-let startTime;
-let elapsedTime = 0;
+let startTime = 0;
+let elapsedTime = 664256486;
 let timeInterval;
 let lapStartTime = 0;
 let totalLapElapsedTime = 0;
@@ -33,13 +33,13 @@ function timeTostring(time) {
   let timeInDays = time / 86400000;
   let dd = Math.floor(timeInDays);
   let timeInHours = time / 3600000;
-  let hh = Math.floor(timeInHours);
+  let hh = Math.floor(timeInHours%24);
   let timeInMins = (timeInHours - hh) * 60;
-  let mm = Math.floor(timeInMins);
+  let mm = Math.floor(timeInMins%60);
   let timeInSec = (timeInMins - mm) * 60;
-  let ss = Math.floor(timeInSec);
+  let ss = Math.floor(timeInSec%60);
   let timeInMiliSec = (timeInSec - ss) * 100;
-  let ms = Math.floor(timeInMiliSec);
+  let ms = Math.floor(timeInMiliSec%1000);
 
   let preciseDay = dd < 10 ? "0" + dd : dd;
   let preciseHour = hh < 10 ? "0" + hh : hh;
@@ -65,7 +65,7 @@ resetBtn.addEventListener("click", function () {
   startTime = 0;
   lapStartTime = 0;
   totalLapTime = 0;
-  time.innerText = "00;00:00:00:00";
+  time.innerText = "00:00:00:00:00";
   startBtn.style.display = "inline-block";
   stopBtn.style.display = "none";
   resetBtn.style.display = "none";
@@ -100,7 +100,6 @@ lapBtn.addEventListener("click", function () {
   dislayLapTime(totalLapTimeDiv, totalLapTime);
 
   lapContainer.appendChild(lapRow);
-  // lapContainer.classList.remove("hidden")
   lapRow.appendChild(lapNoDiv);
   lapRow.appendChild(lapTimeDiv);
   lapRow.appendChild(totalLapTimeDiv);
